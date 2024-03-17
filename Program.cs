@@ -2,23 +2,31 @@
 // Tarteeb School (c) All rights reserved
 //----------------------------------------
 
+using EShop.Brokers.Storages;
 using EShop.Models.Shop;
+using EShop.Services.Login;
 using EShop.Services.Order;
+using EShop.Services.Storage;
 
 namespace EShop
 {
     public class Program
     {
-        static List<Product> products = new List<Product> {
-        new Product { Name = "Banana"},
-        new Product { Name = "Ananas"},
-        new Product { Name = "Apple"},
-        new Product { Name = "Orange"},
-    };
-        static List<IShipping> shippings = new List<IShipping> { new Sea(), new Air(), new Ground() };
 
-        public static void Main()
+        static IList<IShipping> shippings = new List<IShipping> { new Sea(), new Air(), new Ground() };
+
+        public static void Main(string[] args)
         {
+            ILoginService loginService = new LoginService();
+            IProductService productService = new ProductService();
+            Console.WriteLine("------ Welcome to electronik shopping ------");
+            bool  isLogged = false;
+            do
+            {
+                Console.Write("Can you input your name : ");  
+                string userNameInput = Console.ReadLine();  
+            } while (isLogged);
+
             List<Product> selectedProducts = new List<Product>();
 
             bool choosingProduct = true;
@@ -46,7 +54,7 @@ namespace EShop
                 }
             } while (choosingProduct);
             Console.Clear();
-            
+
             OrderService order = new OrderService(selectedProducts);
             PrintShippingTypes();
             Console.WriteLine("Select shippingType");
