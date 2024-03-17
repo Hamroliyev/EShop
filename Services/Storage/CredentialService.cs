@@ -10,7 +10,7 @@ namespace EShop.Services.Storage
 {
     public class CredentialService : ICredentialService
     {
-        private readonly IStorageBroker storageBroker;
+        private readonly IStorageBroker<Credential> storageBroker;
         private readonly ILoggingBroker loggingBroker;
 
         public CredentialService()
@@ -28,12 +28,12 @@ namespace EShop.Services.Storage
 
         public List<Credential> GetAllCredentials()
         {
-            if (this.storageBroker.GetAllCredentials().Count == 0)
+            if (this.storageBroker.GetAll().Count == 0)
             {
                 return new List<Credential>();
             }
 
-            return this.storageBroker.GetAllCredentials();
+            return this.storageBroker.GetAll();
         }
 
         private Credential CreateAndLogInvalidCredential()
@@ -54,7 +54,7 @@ namespace EShop.Services.Storage
             }
             else
             {
-                return this.storageBroker.AddCredential(credential);
+                return this.storageBroker.Add(credential);
             }
         }
     }

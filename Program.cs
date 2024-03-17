@@ -3,6 +3,7 @@
 //----------------------------------------
 
 using EShop.Brokers.Storages;
+using EShop.Models.Auth;
 using EShop.Models.Shop;
 using EShop.Services.Login;
 using EShop.Services.Order;
@@ -12,58 +13,71 @@ namespace EShop
 {
     public class Program
     {
-
+        static ILoginService loginService = new LoginService();
+        static ICredentialService credentialService = new CredentialService();
+        static IProductService productService = new ProductService();
         static IList<IShipping> shippings = new List<IShipping> { new Sea(), new Air(), new Ground() };
-
+        static Credential GetCredential(string username,
+                                        string password)
+        {
+            return new Credential()
+            {
+                Username = username,
+                Password = password
+            };
+        }
         public static void Main(string[] args)
         {
-            ILoginService loginService = new LoginService();
-            IProductService productService = new ProductService();
             Console.WriteLine("------ Welcome to electronik shopping ------");
-            bool  isLogged = false;
-            do
+            Console.Write("Can you input your name : ");
+            string userNameInput = Console.ReadLine();
+            Console.Write("Can you input your password : ");
+            string passwordIput = Console.ReadLine();
+            Credential credential = GetCredential(userNameInput, passwordIput);
+
+            if (loginService.CheckUserLogin(credential))
             {
-                Console.Write("Can you input your name : ");  
-                string userNameInput = Console.ReadLine();  
-            } while (isLogged);
+                List<Product> selectedProducts = new List<Product>();
 
-            List<Product> selectedProducts = new List<Product>();
-
-            bool choosingProduct = true;
-            do
+                bool choosingProduct = true;
+                do
+                {
+                    PrintProduct();
+                    Console.WriteLine("Select product");
+                    string input = Console.ReadLine();
+                    int selectedIndex = Convert.ToInt32(input);
+                    if (selectedIndex == 0)
+                    {
+                        choosingProduct = false;
+                    }
+                    else
+                    {
+                        Console.Write("Enter weight: ");
+                        string inputWeight = Console.ReadLine();
+                        double weight = Convert.ToDouble(inputWeight);
+                        productService.GetProducts()[selectedIndex - 1].Weight = weight;
+                        selectedProducts.Add(productService.GetProducts()[selectedIndex - 1]);
+                        Console.Clear();
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Successfully added ✔✔");
+                        Console.ResetColor();
+                    }
+                } while (choosingProduct);
+                Console.Clear();
+                OrderService order = new OrderService(selectedProducts);
+                PrintShippingTypes();
+                Console.WriteLine("Select shippingType");
+                string inputShipping = Console.ReadLine();
+                int selectedShipping = Convert.ToInt32(inputShipping);
+                order.SetShippingType(shippings[selectedShipping]);
+                Console.Clear();
+                Console.WriteLine("Shipping successfully added ✔✔");
+                PrintOrderDetails(order);
+            }
+            else
             {
-                PrintProduct();
-                Console.WriteLine("Select product");
-                string input = Console.ReadLine();
-                int selectedIndex = Convert.ToInt32(input);
-                if (selectedIndex == 0)
-                {
-                    choosingProduct = false;
-                }
-                else
-                {
-                    Console.Write("Enter weight: ");
-                    string inputWeight = Console.ReadLine();
-                    double weight = Convert.ToDouble(inputWeight);
-                    products[selectedIndex - 1].Weight = weight;
-                    selectedProducts.Add(products[selectedIndex - 1]);
-                    Console.Clear();
-                    Console.BackgroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Successfully added ✔✔");
-                    Console.ResetColor();
-                }
-            } while (choosingProduct);
-            Console.Clear();
-
-            OrderService order = new OrderService(selectedProducts);
-            PrintShippingTypes();
-            Console.WriteLine("Select shippingType");
-            string inputShipping = Console.ReadLine();
-            int selectedShipping = Convert.ToInt32(inputShipping);
-            order.SetShippingType(shippings[selectedShipping]);
-            Console.Clear();
-            Console.WriteLine("Shipping successfully added ✔✔");
-            PrintOrderDetails(order);
+                credentialService.AddCredential(credential);
+            }
         }
 
         static void PrintProduct()
@@ -71,7 +85,7 @@ namespace EShop
             Console.WriteLine("0) Order create");
             Console.WriteLine("-------Start-of-product-------------");
             int index = 1;
-            foreach (var item in products)
+            foreach (var item in productService.GetProducts())
             {
                 Console.WriteLine(index++ + ")" + item.Name);
 
