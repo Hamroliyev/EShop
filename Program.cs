@@ -17,15 +17,7 @@ namespace EShop
         static ICredentialService credentialService = new CredentialService();
         static IProductService productService = new ProductService();
         static IList<IShipping> shippings = new List<IShipping> { new Sea(), new Air(), new Ground() };
-        static Credential GetCredential(string username,
-                                        string password)
-        {
-            return new Credential()
-            {
-                Username = username,
-                Password = password
-            };
-        }
+        
         public static void Main(string[] args)
         {
             Console.WriteLine("------ Welcome to electronik shopping ------");
@@ -107,10 +99,20 @@ namespace EShop
 
         }
 
+        static Credential GetCredential(string username,
+                                        string password)
+        {
+            return new Credential()
+            {
+                Username = username,
+                Password = password
+            };
+        }
+
         static void PrintOrderDetails(OrderService order)
         {
             Console.WriteLine($"Shipping cost: ${order.GetShippingCost()}");
-            Console.WriteLine($"Shipping weight: ${order.GetTotalWeight()}");
+            Console.WriteLine($"Shipping weight: {order.GetTotalWeight()}");
             Console.WriteLine($"Shipping date: ${order.GetShippingDate()}");
         }
     }
