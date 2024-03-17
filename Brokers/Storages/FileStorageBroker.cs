@@ -6,7 +6,7 @@ using EShop.Models.Auth;
 
 namespace EShop.Brokers.Storages
 {
-    public class FileStorageBroker : IStorageBroker
+    public class FileStorageBroker : IStorageBroker<Credential>
     {
         private const string FilePath = "Assets/Credentials.txt";
 
@@ -15,7 +15,7 @@ namespace EShop.Brokers.Storages
             EnsureFileExists();
         }
 
-        public List<Credential> GetAllCredentials()
+        public List<Credential> GetAll()
         {
             List<Credential> credentials = new List<Credential>(); 
             string[] credentialLines = File.ReadAllLines(FilePath);
@@ -32,7 +32,7 @@ namespace EShop.Brokers.Storages
             return credentials;
         } 
         
-        public Credential AddCredential(Credential credential)
+        public Credential Add(Credential credential)
         {
             string credentialLine = $"{credential.Username}*{credential.Password}\n";
             File.AppendAllText(FilePath,credentialLine);

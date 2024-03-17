@@ -6,9 +6,9 @@ using EShop.Models.Auth;
 
 namespace EShop.Brokers.Storages
 {
-    public interface IStorageBroker
+    public interface IStorageBroker<T>
     {
-        List<Credential> GetAllCredentials();
-        Credential AddCredential(Credential credential);
+        List<T> GetAll();
+        T Add(T credential);
     }
 }
