@@ -9,7 +9,7 @@ namespace EShop.Services.Login
 {
     public class LoginService : ILoginService
     {
-        private readonly IStorageBroker storageBroker;
+        private readonly IStorageBroker<Credential> storageBroker;
 
         public LoginService()
         {
@@ -18,7 +18,7 @@ namespace EShop.Services.Login
 
         public bool CheckUserLogin(Credential credential)
         {
-            foreach (Credential credentialItem in storageBroker.GetAllCredentials())
+            foreach (Credential credentialItem in storageBroker.GetAll())
             {
                 if (credential.Username == credentialItem.Username && 
                     credential.Password == credentialItem.Password)
