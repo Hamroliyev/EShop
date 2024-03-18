@@ -2,7 +2,6 @@
 // Tarteeb School (c) All rights reserved
 //----------------------------------------
 
-using EShop.Brokers.Storages;
 using EShop.Models.Auth;
 using EShop.Models.Shop;
 using EShop.Services.Login;
@@ -30,14 +29,15 @@ namespace EShop
             if (loginService.CheckUserLogin(credential))
             {
                 List<Product> selectedProducts = new List<Product>();
-
                 bool choosingProduct = true;
+
                 do
                 {
                     PrintProduct();
                     Console.WriteLine("Select product");
                     string input = Console.ReadLine();
                     int selectedIndex = Convert.ToInt32(input);
+
                     if (selectedIndex == 0)
                     {
                         choosingProduct = false;
@@ -55,6 +55,7 @@ namespace EShop
                         Console.ResetColor();
                     }
                 } while (choosingProduct);
+
                 Console.Clear();
                 OrderService order = new OrderService(selectedProducts);
                 PrintShippingTypes();
@@ -74,7 +75,7 @@ namespace EShop
 
         static void PrintProduct()
         {
-            Console.WriteLine("0) Order create");
+            Console.WriteLine("\t0) Order create");
             Console.WriteLine("-------Start-of-product-------------");
             int index = 1;
             foreach (var item in productService.GetProducts())
