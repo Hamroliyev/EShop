@@ -10,6 +10,17 @@ shipping service, and user-readble console ui.
 you can use it for add credential to the file  and get all credentials 
 from the file, and it inherit from IStorageBroker.cs interface.
 
+    Model
+
+        namespace EShop.Models.Auth
+        {
+            public class Credential
+            {
+                public string Username { get; set; }
+                public string Password { get; set; }
+            }
+        }
+
     FileStorageBroker.cs
 
         //----------------------------------------
@@ -65,13 +76,42 @@ from the file, and it inherit from IStorageBroker.cs interface.
                 }
             }
         }
+
+    LoginService.cs
+
+        using EShop.Brokers.Storages;
+        using EShop.Models.Auth;
+
+        namespace EShop.Services.Login  
+        {
+            public class LoginService : ILoginService
+            {
+                private readonly IStorageBroker<Credential> storageBroker;
+
+                public LoginService()
+                {
+                    this.storageBroker = new FileStorageBroker();
+                }
+
+                public bool CheckUserLogin(Credential credential)
+                {
+                    foreach (Credential credentialItem in storageBroker.GetAll())
+                    {
+                        if (credential.Username == credentialItem.Username && 
+                            credential.Password == credentialItem.Password)
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+
 2. We have also MemoryBroker inherits from IStorageBroker.cs interface. The broker work with products and use in-memory for storing products.
 
     MemoryBroker.cs
-
-        //----------------------------------------
-        // Tarteeb School (c) All rights reserved
-        //----------------------------------------
 
         using EShop.Models.Shop;
 
@@ -118,11 +158,7 @@ from the file, and it inherit from IStorageBroker.cs interface.
 
 Main is logging broker. The broker manage to log on console. It has four essential methods.
 
-    LoggingBroker.cs
-
-        //----------------------------------------
-        // Tarteeb School (c) All rights reserved
-        //----------------------------------------
+LoggingBroker.cs
 
         namespace EShop.Brokers.Loggings
         {
@@ -157,3 +193,134 @@ Main is logging broker. The broker manage to log on console. It has four essenti
                 }
             }
         }
+
+
+## Order
+
+Model
+
+    namespace EShop.Models.Shop
+    {
+        public class Product
+        {
+            public string Name { get; set; }
+            public double Weight { get; set; }
+        }
+    }
+ 
+We have some sort of shipping types and you can use all of that you want.
+
+1.Sea
+1.Air
+1.Ground 
+and many more
+
+-Air
+
+    namespace EShop.Services.Order
+    {
+        public class Air : IShipping
+        {
+            public double GetCost(OrderService order)
+            {
+                if (order.GetTotal() < 100)
+                {
+                    return 0;
+                }
+
+                return Math.Max(20, order.GetTotalWeight()*3);
+            }
+
+            public DateTimeOffset GetDate()
+            {
+                return DateTime.Now.AddDays(7);
+            }
+        }
+    }
+
+-Ground
+
+    namespace EShop.Services.Order
+    {
+        public class Ground : IShipping
+        {
+            public double GetCost(OrderService order)
+            {
+                if (order.GetTotal() < 100)
+                {
+                    return 0;
+                }
+
+                return Math.Max(10, order.GetTotalWeight()*1.5);
+            }
+
+            public DateTimeOffset GetDate()
+            {
+                return DateTime.Now.AddDays(5);
+            }
+        }
+    }
+
+-Sea
+
+    namespace EShop.Services.Order
+    {
+        public class Sea : IShipping
+        {
+            public double GetCost(OrderService order)
+            {
+                if (order.GetTotal() < 100)
+                {
+                    return 0;
+                }
+
+                return Math.Max(15, order.GetTotalWeight()*2);
+            }
+
+            public DateTimeOffset GetDate()
+            {
+                return DateTime.Now.AddDays(6);
+            }
+        }
+    }
+
+and at the end we show you main Oreder service.
+
+    using EShop.Models.Shop;
+
+    namespace EShop.Services.Order
+    {
+        public class OrderService
+        {        
+            private IList<Product> lineItems;
+            private IShipping shipping;
+
+            public OrderService(IList<Product> products) =>
+                lineItems = products;
+
+            public int GetTotal() => lineItems.Count;
+            public double GetTotalWeight() => lineItems.Sum(x => x.Weight);
+            public void SetShippingType(IShipping shippingType) => 
+                shipping = shippingType;
+            
+            public double GetShippingCost()
+            {
+                return shipping.GetCost(this);
+            }
+            public DateTimeOffset GetShippingDate() => DateTime.Now;
+        }
+    }
+
+Main part is switching the shippings using IShipping interface because every shipping type classes inherit from it. We can implement **'O'** in the __Solid__.
+
+Setting Shipping type : 
+
+    public void SetShippingType(IShipping shippingType) =>      
+        shipping = shippingType;
+
+---
+
+## Result.
+
+
+
