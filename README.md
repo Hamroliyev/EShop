@@ -322,5 +322,7 @@ Setting Shipping type :
 
 ## Result.
 
+![result](https://github.com/Hamroliyev/EShop/blob/main/Assets/result.gif)
+
 
 
