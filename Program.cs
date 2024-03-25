@@ -6,7 +6,8 @@ using EShop.Models.Auth;
 using EShop.Models.Shop;
 using EShop.Services.Login;
 using EShop.Services.Order;
-using EShop.Services.Storage;
+using EShop.Services.Credentials;
+using EShop.Services.Products;
 
 namespace EShop
 {
