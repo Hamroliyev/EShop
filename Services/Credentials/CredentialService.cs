@@ -6,7 +6,7 @@ using EShop.Brokers.Loggings;
 using EShop.Brokers.Storages;
 using EShop.Models.Auth;
 
-namespace EShop.Services.Storage
+namespace EShop.Services.Credentials
 {
     public class CredentialService : ICredentialService
     {

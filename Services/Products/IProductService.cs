@@ -4,7 +4,7 @@
 
 using EShop.Models.Shop;
 
-namespace EShop.Services.Storage
+namespace EShop.Services.Products
 {
     public interface IProductService
     {

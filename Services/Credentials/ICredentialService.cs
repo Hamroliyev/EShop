@@ -4,7 +4,7 @@
 
 using EShop.Models.Auth;
 
-namespace EShop.Services.Storage
+namespace EShop.Services.Credentials
 {
     public interface ICredentialService
     {

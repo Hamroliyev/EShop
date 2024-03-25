@@ -5,7 +5,7 @@
 using EShop.Brokers.Storages;
 using EShop.Models.Shop;
 
-namespace EShop.Services.Storage
+namespace EShop.Services.Products
 {
     public class ProductService : IProductService
     {
