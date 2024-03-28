@@ -54,7 +54,15 @@ namespace EShop.Services.Credentials
             }
             else
             {
-                return this.storageBroker.Add(credential);
+                try
+                {
+                    return this.storageBroker.Add(credential);
+                }
+                catch (Exception exception)
+                {
+                    this.loggingBroker.LogError(exception);
+                    return new Credential();
+                }
             }
         }
     }
