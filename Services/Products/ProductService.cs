@@ -5,7 +5,6 @@
 using EShop.Brokers.Loggings;
 using EShop.Brokers.Storages;
 using EShop.Models.Shop;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EShop.Services.Products
 {
